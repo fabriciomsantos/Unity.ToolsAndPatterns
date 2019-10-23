@@ -1,0 +1,19 @@
+{
+  "name": "com.fabricio.toolsandpatterns",
+  "version": "1.0.1",
+  "displayName": "Tools And Patterns",
+  "description": "Tools And Patterns",
+  "unity": "2018.3",
+  "keywords": [
+    "Scriptable",
+    "Objects",
+    "Architecture"
+  ],
+  "author": {
+    "name": "Fabricio Moreira",
+    "email": "fabriciomoreira19@gmail.com",
+    "url": "https://fabriciomsantos.weebly.com/"
+  },
+  "type": "library",
+  "hideInEditor": false
+}
