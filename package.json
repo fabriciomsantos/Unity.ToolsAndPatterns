@@ -1,9 +1,14 @@
 {
   "name": "com.fabricio.toolsandpatterns",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "displayName": "Tools And Patterns",
   "description": "Tools And Patterns",
   "unity": "2018.3",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fabriciomsantos/Unity_ToolsAndPatterns.git",
+    "revision": "HEAD"
+  },
   "keywords": [
     "Scriptable",
     "Objects",
