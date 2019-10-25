@@ -19,7 +19,7 @@ namespace Tools.Save.Local
             public bool useEncryption;
             public bool formatJson;
 
-            [InspectInline(canCreateSubasset = true)]
+            [InspectInline(canEditRemoteTarget = true)]
             public ScriptableObject objectToSave;
         }
 
