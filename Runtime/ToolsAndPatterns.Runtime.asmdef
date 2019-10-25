@@ -1,3 +1,15 @@
-﻿{
-	"name": "ToolsAndPatterns.Runtime"
+{
+    "name": "ToolsAndPatterns.Runtime",
+    "references": [
+        "GUID:89d7baee19e5fff4e9eba80223a7cd41"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
