@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
+using Tools.EditorTools.Attributes;
 using Tools.GamePatterns;
 
 using UnityEngine;
@@ -17,11 +18,14 @@ namespace Tools.Save.Local
             public string fileName;
             public bool useEncryption;
             public bool formatJson;
+
+            [InspectInline(canCreateSubasset = true)]
             public ScriptableObject objectToSave;
         }
 
         #region Public Variables
         public bool loadOnEnable;
+        public bool uniqueFile;
         public string encryptionKey = "b14ca5898a4e4133bbce2ea2315a1916";
         public SaveType[] saveTypes;
 
@@ -29,14 +33,41 @@ namespace Tools.Save.Local
 
         #region Private Variables
 
+#if UNITY_EDITOR
+        [Header("Test")]
+        private bool load = false;
+        private bool save = false;
+#endif
+
         #endregion
 
         #region Unity Methods
+
+        /// <summary>
+        /// Called when the script is loaded or a value is changed in the
+        /// inspector (Called in the editor only).
+        /// </summary>
+        void OnValidate()
+        {
+            if (save)
+            {
+                SaveGame();
+                save = false;
+            }
+
+            if (load)
+            {
+                LoadGame();
+                load = false;
+            }
+        }
+
         /// <summary>
         /// This function is called when the object becomes enabled and active.
         /// </summary>
         void OnEnable()
         {
+            //SaveGame();
             if (loadOnEnable)
             {
                 LoadGame();
@@ -48,33 +79,71 @@ namespace Tools.Save.Local
         #region Public Methods
         public void SaveGame()
         {
-            foreach (var save in saveTypes)
+            if (uniqueFile)
             {
-                var fileName = save.fileName + ".json";
+                var fileName = "save.json";
                 var filePath = Path.Combine(Application.persistentDataPath, fileName);
-
-                if (save.objectToSave)
+                string dataAsJson = "";
+                foreach (var save in saveTypes)
                 {
-                    string dataAsJson = JsonUtility.ToJson(save.objectToSave, save.formatJson);
-                    if (save.useEncryption)
+                    if (save.objectToSave)
                     {
-                        dataAsJson = AesOperationEncryption.EncryptString(encryptionKey, dataAsJson);
+                        dataAsJson += "\n" + JsonUtility.ToJson(save.objectToSave, save.formatJson);
+                        if (save.useEncryption)
+                        {
+                            dataAsJson = AesOperationEncryption.EncryptString(encryptionKey, dataAsJson);
+                        }
                     }
-                    File.WriteAllText(filePath, dataAsJson);
-
+                    else
+                    {
+                        Debug.LogError("missing object data");
+                    }
                 }
-                else
+                if (dataAsJson != null)
                 {
-                    Debug.LogError("missing object data");
+                    File.WriteAllText(filePath, dataAsJson);
                 }
+            }
+            else
+            {
+                foreach (var save in saveTypes)
+                {
+                    var fileName = save.fileName + ".json";
+                    var filePath = Path.Combine(Application.persistentDataPath, fileName);
 
+                    if (save.objectToSave)
+                    {
+                        string dataAsJson = JsonUtility.ToJson(save.objectToSave, save.formatJson);
+                        if (save.useEncryption)
+                        {
+                            dataAsJson = AesOperationEncryption.EncryptString(encryptionKey, dataAsJson);
+                        }
+                        File.WriteAllText(filePath, dataAsJson);
+
+                    }
+                    else
+                    {
+                        Debug.LogError("missing object data");
+                    }
+
+                }
             }
         }
         public void LoadGame()
         {
             foreach (var save in saveTypes)
             {
-                var fileName = save.fileName + ".json";
+                var fileName = "";
+
+                if (uniqueFile)
+                {
+                    fileName = "save.json";
+                }
+                else
+                {
+                    fileName = save.fileName + ".json";
+                }
+
                 var filePath = Path.Combine(Application.persistentDataPath, fileName);
 
                 if (File.Exists(filePath))
@@ -101,7 +170,7 @@ namespace Tools.Save.Local
         #endregion
     }
 
-    public class AesOperationEncryption
+    public static class AesOperationEncryption
     {
         public static string EncryptString(string key, string plainText)
         {
