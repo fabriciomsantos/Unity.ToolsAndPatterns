@@ -16,7 +16,6 @@ namespace Tools.Save.Local
         public class SaveType
         {
             public string fileName;
-            public bool useEncryption;
             public bool formatJson;
 
             [InspectInline(canEditRemoteTarget = true)]
@@ -24,19 +23,26 @@ namespace Tools.Save.Local
         }
 
         #region Public Variables
+        [Header("Settings")]
         public bool loadOnEnable;
         public bool uniqueFile;
+
+        [Header("Encryption")]
+        public bool useEncryption;
         public string encryptionKey = "b14ca5898a4e4133bbce2ea2315a1916";
+
+        [Header("Objects")]
         public SaveType[] saveTypes;
 
         #endregion
 
         #region Private Variables
+        private const char separator = ';';
 
 #if UNITY_EDITOR
         [Header("Test")][SerializeField]
         private bool load = false;
-		[SerializeField]
+        [SerializeField]
         private bool save = false;
 #endif
 
@@ -68,7 +74,6 @@ namespace Tools.Save.Local
         /// </summary>
         void OnEnable()
         {
-            //SaveGame();
             if (loadOnEnable)
             {
                 LoadGame();
@@ -89,8 +94,8 @@ namespace Tools.Save.Local
                 {
                     if (save.objectToSave)
                     {
-                        dataAsJson += "\n" + JsonUtility.ToJson(save.objectToSave, save.formatJson);
-                        if (save.useEncryption)
+                        dataAsJson += JsonUtility.ToJson(save.objectToSave, save.formatJson) + separator + "\n";
+                        if (useEncryption)
                         {
                             dataAsJson = AesOperationEncryption.EncryptString(encryptionKey, dataAsJson);
                         }
@@ -103,6 +108,7 @@ namespace Tools.Save.Local
                 if (dataAsJson != null)
                 {
                     File.WriteAllText(filePath, dataAsJson);
+                    Debug.Log("File Saved");
                 }
             }
             else
@@ -110,12 +116,17 @@ namespace Tools.Save.Local
                 foreach (var save in saveTypes)
                 {
                     var fileName = save.fileName + ".json";
+                    if (save.fileName == "")
+                    {
+                        Debug.LogWarning("Enter file names");
+                        return;
+                    }
                     var filePath = Path.Combine(Application.persistentDataPath, fileName);
 
                     if (save.objectToSave)
                     {
                         string dataAsJson = JsonUtility.ToJson(save.objectToSave, save.formatJson);
-                        if (save.useEncryption)
+                        if (useEncryption)
                         {
                             dataAsJson = AesOperationEncryption.EncryptString(encryptionKey, dataAsJson);
                         }
@@ -126,15 +137,17 @@ namespace Tools.Save.Local
                     {
                         Debug.LogError("missing object data");
                     }
-
                 }
+                Debug.Log("Files Saved");
             }
         }
         public void LoadGame()
         {
-            foreach (var save in saveTypes)
+            for (int i = 0; i < saveTypes.Length; i++)
             {
-                var fileName = "";
+                SaveType save = saveTypes[i];
+
+                string fileName;
 
                 if (uniqueFile)
                 {
@@ -142,6 +155,11 @@ namespace Tools.Save.Local
                 }
                 else
                 {
+                    if (save.fileName == "")
+                    {
+                        Debug.LogWarning("Enter file name");
+                        return;
+                    }
                     fileName = save.fileName + ".json";
                 }
 
@@ -150,11 +168,23 @@ namespace Tools.Save.Local
                 if (File.Exists(filePath))
                 {
                     string dataAsJson = File.ReadAllText(filePath);
-                    if (save.useEncryption)
+
+                    if (useEncryption)
                     {
                         dataAsJson = AesOperationEncryption.DecryptString(encryptionKey, dataAsJson);
                     }
-                    JsonUtility.FromJsonOverwrite(dataAsJson, save.objectToSave);
+
+                    if (uniqueFile)
+                    {
+                        string[] types = dataAsJson.Split(separator);
+                        JsonUtility.FromJsonOverwrite(types[i], save.objectToSave);
+                        Debug.Log("File Loaded");
+                    }
+                    else
+                    {
+                        JsonUtility.FromJsonOverwrite(dataAsJson, save.objectToSave);
+                        Debug.Log("Files Loaded");
+                    }
                 }
                 else
                 {
