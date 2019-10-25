@@ -34,8 +34,9 @@ namespace Tools.Save.Local
         #region Private Variables
 
 #if UNITY_EDITOR
-        [Header("Test")]
+        [Header("Test")][SerializeField]
         private bool load = false;
+		[SerializeField]
         private bool save = false;
 #endif
 
