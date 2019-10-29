@@ -9,7 +9,8 @@ namespace Tools.Components.Scene
     {
         #region Public Variables
         public bool LoadScenesOnEnable;
-        public SceneReference[] scenesList;
+        public SceneReference[] baseScenes;
+        public SceneReference[] levelsScenes;
         #endregion
 
         #region Private Variables
@@ -25,7 +26,7 @@ namespace Tools.Components.Scene
         {
             if (LoadScenesOnEnable)
             {
-                foreach (var scene in scenesList)
+                foreach (var scene in baseScenes)
                 {
                     LoadSceneAsync(scene, LoadSceneMode.Additive);
                 }
