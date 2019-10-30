@@ -10,10 +10,10 @@ namespace Tools.Scene
         #region Public Variables
         public bool LoadScenesOnEnable;
         public SceneReference[] baseScenes;
-        public SceneReference[] levelsScenes;
+        public SceneReference[] levelScenes;
 
         [Min(0)]
-        public int currentLevel = 0;
+        public int currentLevel;
         #endregion
 
         #region Private Variables
@@ -25,7 +25,7 @@ namespace Tools.Scene
         /// <summary>
         /// This function is called when the object becomes enabled and active.
         /// </summary>
-        void OnEnable()
+        private void OnEnable()
         {
             if (LoadScenesOnEnable)
             {
@@ -33,7 +33,7 @@ namespace Tools.Scene
                 {
                     LoadSceneAsync(scene, LoadSceneMode.Additive);
                 }
-                LoadSceneAsync(levelsScenes[currentLevel], LoadSceneMode.Additive);
+                LoadSceneAsync(levelScenes[currentLevel], LoadSceneMode.Additive);
             }
         }
         #endregion
@@ -67,9 +67,16 @@ namespace Tools.Scene
 
         public void LoadLevel(int index)
         {
-            UnloadScene(levelsScenes[currentLevel]);
+            UnloadScene(levelScenes[currentLevel]);
             currentLevel = index;
-            LoadSceneAsync(levelsScenes[index], LoadSceneMode.Additive);
+            LoadScene(levelScenes[index], LoadSceneMode.Additive);
+        }
+
+        public AsyncOperation LoadLevelAsync(int index)
+        {
+            UnloadScene(levelScenes[currentLevel]);
+            currentLevel = index;
+            return LoadSceneAsync(levelScenes[index], LoadSceneMode.Additive);
         }
 
         #endregion
