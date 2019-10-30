@@ -1,4 +1,6 @@
-﻿using Tools.GamePatterns;
+﻿using System.Collections.Generic;
+
+using Tools.GamePatterns;
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,8 +11,8 @@ namespace Tools.Scene
     {
         #region Public Variables
         public bool LoadScenesOnEnable;
-        public SceneReference[] baseScenes;
-        public SceneReference[] levelScenes;
+        public List<SceneReference> baseScenes = new List<SceneReference>();
+        public List<SceneReference> levelScenes = new List<SceneReference>();
 
         [Min(0)]
         public int currentLevel;
@@ -67,6 +69,11 @@ namespace Tools.Scene
 
         public void LoadLevel(int index)
         {
+            if (index >= levelScenes.Count)
+            {
+                Debug.LogError("index out of range");
+                return;
+            }
             UnloadScene(levelScenes[currentLevel]);
             currentLevel = index;
             LoadScene(levelScenes[index], LoadSceneMode.Additive);
@@ -74,9 +81,26 @@ namespace Tools.Scene
 
         public AsyncOperation LoadLevelAsync(int index)
         {
+            if (index >= levelScenes.Count)
+            {
+                Debug.LogError("index out of range");
+                return null;
+            }
             UnloadScene(levelScenes[currentLevel]);
             currentLevel = index;
             return LoadSceneAsync(levelScenes[index], LoadSceneMode.Additive);
+        }
+
+        public AsyncOperation LoadLevelAsync(SceneReference scene)
+        {
+            if (!levelScenes.Contains(scene))
+            {
+                Debug.LogError("scene it not a level");
+                return null;
+            }
+            UnloadScene(levelScenes[currentLevel]);
+            currentLevel = levelScenes.IndexOf(scene);
+            return LoadSceneAsync(scene, LoadSceneMode.Additive);
         }
 
         #endregion
