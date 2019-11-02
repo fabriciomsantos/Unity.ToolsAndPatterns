@@ -48,8 +48,6 @@ namespace Tools.Scene
                 }
 
                 OnBaseScenesLoaded.Invoke();
-
-                LoadScene(levelScenes[currentLevel], LoadSceneMode.Additive);
             }
         }
         #endregion
