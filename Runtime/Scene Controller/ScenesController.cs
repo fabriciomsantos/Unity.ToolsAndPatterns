@@ -3,19 +3,30 @@
 using Tools.GamePatterns;
 
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Tools.Scene
 {
     public class ScenesController : Singleton<ScenesController>
     {
+        [System.Serializable]
+        public class LevelLoadedEvent : UnityEvent<int>
+        { }
+
         #region Public Variables
         public bool LoadScenesOnEnable;
+        [Header("Scenes")]
         public List<SceneReference> baseScenes = new List<SceneReference>();
         public List<SceneReference> levelScenes = new List<SceneReference>();
 
         [Min(0)]
         public int currentLevel;
+
+        [Header("Events")]
+        public UnityEvent OnBaseScenesLoaded = new UnityEvent();
+
+        public LevelLoadedEvent OnLevelLoaded = new LevelLoadedEvent();
         #endregion
 
         #region Private Variables
@@ -35,6 +46,9 @@ namespace Tools.Scene
                 {
                     LoadSceneAsync(scene, LoadSceneMode.Additive);
                 }
+                
+                OnBaseScenesLoaded.Invoke();
+
                 LoadSceneAsync(levelScenes[currentLevel], LoadSceneMode.Additive);
             }
         }
@@ -77,6 +91,8 @@ namespace Tools.Scene
             UnloadScene(levelScenes[currentLevel]);
             currentLevel = index;
             LoadScene(levelScenes[index], LoadSceneMode.Additive);
+
+            OnLevelLoaded.Invoke(currentLevel);
         }
 
         public AsyncOperation LoadLevelAsync(int index)
@@ -88,7 +104,12 @@ namespace Tools.Scene
             }
             UnloadScene(levelScenes[currentLevel]);
             currentLevel = index;
-            return LoadSceneAsync(levelScenes[index], LoadSceneMode.Additive);
+
+            var asyncOperation = LoadSceneAsync(levelScenes[index], LoadSceneMode.Additive);
+
+            OnLevelLoaded.Invoke(currentLevel);
+
+            return asyncOperation;
         }
 
         public AsyncOperation LoadLevelAsync(SceneReference scene)
@@ -100,7 +121,12 @@ namespace Tools.Scene
             }
             UnloadScene(levelScenes[currentLevel]);
             currentLevel = levelScenes.IndexOf(scene);
-            return LoadSceneAsync(scene, LoadSceneMode.Additive);
+
+            var asyncOperation = LoadSceneAsync(scene, LoadSceneMode.Additive);
+
+            OnLevelLoaded.Invoke(currentLevel);
+
+            return asyncOperation;
         }
 
         #endregion
