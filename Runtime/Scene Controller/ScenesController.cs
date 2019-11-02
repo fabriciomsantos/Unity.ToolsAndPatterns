@@ -46,10 +46,10 @@ namespace Tools.Scene
                 {
                     LoadSceneAsync(scene, LoadSceneMode.Additive);
                 }
-                
+
                 OnBaseScenesLoaded.Invoke();
 
-                LoadSceneAsync(levelScenes[currentLevel], LoadSceneMode.Additive);
+                LoadScene(levelScenes[currentLevel], LoadSceneMode.Additive);
             }
         }
         #endregion
