@@ -1,6 +1,8 @@
 {
     "name": "ToolsAndPatterns.Editor",
-    "references": [],
+    "references": [
+        "GUID:4c834528f9dfe104cada43bed98f653a"
+    ],
     "includePlatforms": [
         "Editor"
     ],
