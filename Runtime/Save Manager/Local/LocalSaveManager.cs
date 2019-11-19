@@ -3,7 +3,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-using Tools.EditorTools.Attributes;
 using Tools.GamePatterns;
 
 using UnityEngine;
@@ -18,7 +17,9 @@ namespace Tools.Save.Local
             public string fileName;
             public bool formatJson;
 
-            [InspectInline(canEditRemoteTarget = true)]
+#if UNITY_EDITOR 
+            [EditorTools.Attributes.InspectInline(canEditRemoteTarget = true)]
+#endif
             public ScriptableObject objectToSave;
         }
 
@@ -49,7 +50,7 @@ namespace Tools.Save.Local
         #endregion
 
         #region Unity Methods
-
+#if UNITY_EDITOR
         /// <summary>
         /// Called when the script is loaded or a value is changed in the
         /// inspector (Called in the editor only).
@@ -68,7 +69,7 @@ namespace Tools.Save.Local
                 load = false;
             }
         }
-
+#endif
         /// <summary>
         /// This function is called when the object becomes enabled and active.
         /// </summary>
