@@ -48,6 +48,7 @@ namespace Tools.Scene
                 }
 
                 OnBaseScenesLoaded.Invoke();
+                LoadSceneAsync(levelScenes[0], LoadSceneMode.Additive);
             }
         }
         #endregion
@@ -73,10 +74,7 @@ namespace Tools.Scene
 
         public void UnloadScene(SceneReference scene)
         {
-            if (SceneManager.GetSceneByName(scene).isLoaded)
-            {
-                SceneManager.UnloadSceneAsync(scene);
-            }
+            SceneManager.UnloadSceneAsync(scene);
         }
 
         public void LoadLevel(int index)

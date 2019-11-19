@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 
 using UnityEngine;
+using System;
 
 namespace Tools.EditorTools.Hierarchy
 {
@@ -12,11 +13,11 @@ namespace Tools.EditorTools.Hierarchy
             EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;
         }
 
-        static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
+        private static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
         {
             var gameObject = EditorUtility.InstanceIDToObject(instanceID)as GameObject;
 
-            if (gameObject != null && gameObject.name.StartsWith("---", System.StringComparison.Ordinal))
+            if (gameObject?.name.StartsWith("---", StringComparison.Ordinal) == true)
             {
                 EditorGUI.DrawRect(selectionRect, Color.gray);
                 EditorGUI.DropShadowLabel(selectionRect, gameObject.name.Replace("-", "").ToUpperInvariant());
