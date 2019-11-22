@@ -127,7 +127,7 @@ namespace Tools.Scene
 
         public void SetCurrentLevelActive()
         {
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(levelScenes[currentLevel]));
+            SceneManager.SetActiveScene(SceneManager.GetSceneByPath(levelScenes[currentLevel]));
         }
 
         #endregion
