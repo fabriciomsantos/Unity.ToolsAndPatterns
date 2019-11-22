@@ -89,7 +89,6 @@ namespace Tools.Scene
             UnloadScene(levelScenes[currentLevel]);
             currentLevel = index;
             LoadScene(levelScenes[index], LoadSceneMode.Additive);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(levelScenes[index]));
 
             OnLevelLoaded.Invoke(currentLevel);
         }
@@ -105,7 +104,6 @@ namespace Tools.Scene
             currentLevel = index;
 
             var asyncOperation = LoadSceneAsync(levelScenes[index], LoadSceneMode.Additive);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(levelScenes[index]));
             OnLevelLoaded.Invoke(currentLevel);
 
             return asyncOperation;
@@ -122,10 +120,14 @@ namespace Tools.Scene
             currentLevel = levelScenes.IndexOf(scene);
 
             var asyncOperation = LoadSceneAsync(scene, LoadSceneMode.Additive);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(scene));
             OnLevelLoaded.Invoke(currentLevel);
 
             return asyncOperation;
+        }
+
+        public void SetCurrentLevelActive()
+        {
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(levelScenes[currentLevel]));
         }
 
         #endregion
