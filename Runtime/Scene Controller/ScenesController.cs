@@ -60,7 +60,10 @@ namespace Tools.Scene
         /// </summary>
         void Start()
         {
-            SetCurrentLevelActive();
+			if(LoadScenesOnEnable)
+			{
+				SetCurrentLevelActive();
+			}
         }
         #endregion
 
