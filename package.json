@@ -1,8 +1,8 @@
 {
   "name": "com.fabricio.toolsandpatterns",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "displayName": "Tools And Patterns",
-  "description": "Tools And Patterns",
+  "description": "Unity package with tools and game/design patterns",
   "unity": "2018.3",
   "repository": {
     "type": "git",

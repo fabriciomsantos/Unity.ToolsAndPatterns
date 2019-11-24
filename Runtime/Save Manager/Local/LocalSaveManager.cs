@@ -40,10 +40,11 @@ namespace Tools.Save.Local
         private const char separator = ';';
 
 #if UNITY_EDITOR
-        [Header("Debug")][SerializeField]
-        private bool load = false;
-        [SerializeField]
-        private bool save = false;
+        [Header("Debug")][SerializeField][Tooltip("Editor Only")]
+        private bool load;
+
+        [SerializeField][Tooltip("Editor Only")]
+        private bool save;
 #endif
 
         #endregion
