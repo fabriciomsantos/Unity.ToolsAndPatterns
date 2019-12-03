@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Tools.StateMachine
 {
@@ -11,6 +12,8 @@ namespace Tools.StateMachine
 
         #region Public Variables
         public List<Transition> transitions = new List<Transition>();
+        public UnityEvent onEnterState = new UnityEvent();
+        public UnityEvent onExitState = new UnityEvent();
 
         #endregion
 
@@ -38,10 +41,12 @@ namespace Tools.StateMachine
         public virtual void EnterState()
         {
             gameObject.SetActive(true);
+            onEnterState.Invoke();
         }
 
         public virtual void ExitState()
         {
+            onExitState.Invoke();
             gameObject.SetActive(false);
         }
 
@@ -55,9 +60,16 @@ namespace Tools.StateMachine
                 var conditionsSucceeded = true;
                 foreach (var condition in transition.conditions)
                 {
-                    if (condition)
+                    if (condition.condition)
                     {
-                        conditionsSucceeded = condition.Check();
+                        if (condition.returnType == Transition.TransitionType.True)
+                        {
+                            conditionsSucceeded = condition.condition.Check();
+                        }
+                        else
+                        {
+                            conditionsSucceeded = !condition.condition.Check();
+                        }
                     }
                 }
 
