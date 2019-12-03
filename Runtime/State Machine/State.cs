@@ -62,13 +62,17 @@ namespace Tools.StateMachine
                 {
                     if (condition.condition)
                     {
-                        if (condition.returnType == Transition.TransitionType.True)
+                        if (condition.returnType == Transition.TransitionType.True && condition.condition.Check())
                         {
-                            conditionsSucceeded = condition.condition.Check();
+                            conditionsSucceeded = true;
+                        }
+                        else if (condition.returnType == Transition.TransitionType.False && !condition.condition.Check())
+                        {
+                            conditionsSucceeded = true;
                         }
                         else
                         {
-                            conditionsSucceeded = !condition.condition.Check();
+                            conditionsSucceeded = false;
                         }
                     }
                 }
