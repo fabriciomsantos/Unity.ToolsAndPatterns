@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using Tools.EditorTools.Attributes;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,9 +13,13 @@ namespace Tools.StateMachine
         private string description;
 
         #region Public Variables
+        [Header("Base")]
         public List<Transition> transitions = new List<Transition>();
         public UnityEvent onEnterState = new UnityEvent();
         public UnityEvent onExitState = new UnityEvent();
+
+        [Header("Sub State")][InspectInline(canEditRemoteTarget = true)]
+        public State currentSubState;
 
         #endregion
 
@@ -42,6 +48,8 @@ namespace Tools.StateMachine
         {
             gameObject.SetActive(true);
             onEnterState.Invoke();
+
+            currentSubState?.EnterState();
         }
 
         public virtual void ExitState()
@@ -55,6 +63,11 @@ namespace Tools.StateMachine
         #region Public Methods
         public State CheckTransitions()
         {
+            if (currentSubState)
+            {
+                CheckSubTransitions();
+            }
+
             foreach (var transition in transitions)
             {
                 var conditionsSucceeded = true;
@@ -89,6 +102,23 @@ namespace Tools.StateMachine
                 }
             }
             return null;
+        }
+
+        public void CheckSubTransitions()
+        {
+            var nextState = currentSubState.CheckTransitions();
+
+            if (nextState)
+            {
+                TransitionToSubState(nextState);
+            }
+        }
+
+        public void TransitionToSubState(State nextState)
+        {
+            currentSubState?.ExitState();
+            currentSubState = nextState;
+            currentSubState?.EnterState();
         }
 
         #endregion

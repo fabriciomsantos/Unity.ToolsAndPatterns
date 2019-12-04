@@ -35,7 +35,10 @@ namespace Tools.StateMachine
         /// </summary>
         public virtual void Update()
         {
-            CheckTransitions();
+            if (currentState)
+            {
+                CheckTransitions();
+            }
         }
 
         #endregion
