@@ -11,6 +11,7 @@ namespace Tools.GamePatterns
         {
             public string name;
             public GameObject prefab;
+
             [Min(1)]
             public int size;
         }
@@ -28,10 +29,9 @@ namespace Tools.GamePatterns
         #region Unity Methods
 
         /// <summary>
-        /// Start is called on the frame when a script is enabled just before
-        /// any of the Update methods is called the first time.
+        /// This function is called when the object becomes enabled and active.
         /// </summary>
-        void Start()
+        void OnEnable()
         {
             InitializePool();
         }
@@ -65,16 +65,12 @@ namespace Tools.GamePatterns
             {
                 IPooledObject pooledObject = objectToSpawn.GetComponent<IPooledObject>();
 
-                if (pooledObject != null)
-                {
-                    pooledObject.OnObjectSpawn();
-                }
+                pooledObject?.OnObjectSpawn();
             }
 
             poolDictionary[name].Enqueue(objectToSpawn);
 
             return objectToSpawn;
-
         }
 
         #endregion
