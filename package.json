@@ -1,6 +1,6 @@
 {
   "name": "com.fabricio.toolsandpatterns",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "displayName": "Tools And Patterns",
   "description": "Unity package with tools and game/design patterns",
   "unity": "2018.3",
