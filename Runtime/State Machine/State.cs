@@ -75,11 +75,11 @@ namespace Tools.StateMachine
                 {
                     if (condition.condition)
                     {
-                        if (condition.returnType == Transition.TransitionType.True && condition.condition.Check())
+                        if (condition.returnType == Transition.TransitionType.True && condition.condition.CheckCondition())
                         {
                             conditionsSucceeded = true;
                         }
-                        else if (condition.returnType == Transition.TransitionType.False && !condition.condition.Check())
+                        else if (condition.returnType == Transition.TransitionType.False && !condition.condition.CheckCondition())
                         {
                             conditionsSucceeded = true;
                         }
